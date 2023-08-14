@@ -3,13 +3,13 @@ import { LogOut } from 'react-feather';
 import { useAuth } from '../utilities/AuthContext';
 
 const Header = () => {
-  const { user } = useAuth();
+  const { user, handleUserLogout } = useAuth();
   return (
     <div id="header--wrapper">
       {user ? (
         <>
           Welcome {user.name}
-          <LogOut className="header--link" />
+          <LogOut onClick={handleUserLogout} className="header--link" />
         </>
       ) : (
         <button>Login</button>
