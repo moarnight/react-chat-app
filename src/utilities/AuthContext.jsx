@@ -11,8 +11,18 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
 
   useEffect(() => {
-    setLoading(false);
+    getUserOnLoad();
   }, []);
+
+  const getUserOnLoad = async () => {
+    try {
+      const accountDetails = await account.get();
+      setUser(accountDetails);
+    } catch (error) {
+      console.error(error);
+    }
+    setLoading(false);
+  };
 
   const handleUserLogin = async (e, credentials) => {
     e.preventDefault();
@@ -22,7 +32,6 @@ export const AuthProvider = ({ children }) => {
         credentials.email,
         credentials.password
       );
-      console.log('LOGGED IN:', response);
       const accountDetails = account.get();
       setUser(accountDetails);
 
