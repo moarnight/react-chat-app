@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useAuth } from '../utilities/AuthContext';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 const LoginPage = () => {
   const { user, handleUserLogin } = useAuth();
@@ -39,7 +39,7 @@ const LoginPage = () => {
               type="email"
               required
               name="email"
-              placeholder="Enter your email..."
+              placeholder="Your email"
               value={credentials.email}
               onChange={handleInputChange}
             />
@@ -50,7 +50,7 @@ const LoginPage = () => {
               type="password"
               required
               name="password"
-              placeholder="Enter your password..."
+              placeholder="Your password"
               value={credentials.password}
               onChange={handleInputChange}
             />
@@ -64,6 +64,10 @@ const LoginPage = () => {
             />
           </div>
         </form>
+
+        <p>
+          Don't have an account? Register <Link to="/register">here</Link>
+        </p>
       </div>
     </div>
   );
