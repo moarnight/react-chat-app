@@ -51,7 +51,7 @@ const Room = () => {
   }, []);
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
+    e && e.preventDefault();
 
     let payload = {
       user_id: user.$id,
@@ -61,7 +61,7 @@ const Room = () => {
 
     let permissions = [Permission.write(Role.user(user.$id))];
 
-    let response = await databases.createDocument(
+    await databases.createDocument(
       DATABASE_ID,
       COLLECTION_ID_MESSAGES,
       ID.unique(),
@@ -69,16 +69,20 @@ const Room = () => {
       permissions
     );
 
-    // setMessages((prevState) => [response, ...messages]);
-
     setMessageBody('');
+  };
+
+  const handleUserKeydown = (e) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      handleSubmit();
+    }
   };
 
   const getMessages = async () => {
     const response = await databases.listDocuments(
       DATABASE_ID,
       COLLECTION_ID_MESSAGES,
-      [Query.orderDesc('$createdAt'), Query.limit(20)]
+      [Query.orderDesc('$createdAt'), Query.limit(50)]
     );
     setMessages(response.documents);
   };
@@ -97,6 +101,7 @@ const Room = () => {
         <form onSubmit={handleSubmit} id="message--form">
           <div>
             <textarea
+              onKeyDown={handleUserKeydown}
               required
               maxLength="1000"
               placeholder="Say something..."
@@ -108,43 +113,48 @@ const Room = () => {
           </div>
 
           <div className="send-btn--wrapper">
-            <input className="btn btn--secondary" type="submit" value="Send" />
+            <button className="btn btn--secondary" type="submit">
+              Send
+            </button>
           </div>
         </form>
 
         <div>
           <div>
-            {messages.map((message) => (
-              <div key={message.$id} className="message--wrapper">
-                <div className="message--header">
-                  <p>
-                    {message?.username ? (
-                      <span>{message.username}</span>
-                    ) : (
-                      <span>Anonymous user</span>
+            {messages.map((message) => {
+              const isOwnMessage = message.$permissions.includes(
+                `delete("user:${user.$id}")`
+              );
+              return (
+                <div key={message.$id} className="message--wrapper">
+                  <div className="message--header">
+                    <p>
+                      {message?.username ? (
+                        <span>{message.username}</span>
+                      ) : (
+                        <span>Anonymous user</span>
+                      )}
+
+                      <small className="message--timestamp">
+                        {new Date(message.$createdAt).toLocaleString()}
+                      </small>
+                    </p>
+                    {isOwnMessage && (
+                      <Trash2
+                        className="delete--btn"
+                        onClick={() => {
+                          deleteMessage(message.$id);
+                        }}
+                      />
                     )}
+                  </div>
 
-                    <small className="message--timestamp">
-                      {new Date(message.$createdAt).toLocaleString()}
-                    </small>
-                  </p>
-                  {message.$permissions.includes(
-                    `delete("user:${user.$id}")`
-                  ) && (
-                    <Trash2
-                      className="delete--btn"
-                      onClick={() => {
-                        deleteMessage(message.$id);
-                      }}
-                    />
-                  )}
+                  <div className={`message--body ${isOwnMessage && 'own'}`}>
+                    <span>{message.body}</span>
+                  </div>
                 </div>
-
-                <div className="message--body">
-                  <span>{message.body}</span>
-                </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </div>
       </div>

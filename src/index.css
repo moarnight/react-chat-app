@@ -71,6 +71,7 @@ textarea {
   outline: none;
   font-size: 18px;
   text-shadow: none !important;
+  resize: none;
 }
 
 /* Button Styling */
@@ -165,6 +166,10 @@ textarea {
   width: fit-content;
   max-width: 100%;
   word-wrap: break-word; /* added */
+}
+
+.message--body.own {
+  background-color: var(--themeColorSecondary);
 }
 
 .message--body--owner {

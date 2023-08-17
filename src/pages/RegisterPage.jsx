@@ -56,7 +56,7 @@ const RegisterPage = () => {
               type="password"
               required
               name="password1"
-              placeholder="Enter your password"
+              placeholder="Enter your password (8 characters minimum)"
               value={credentials.password1}
               onChange={handleInputChange}
             />
