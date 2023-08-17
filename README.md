@@ -1,5 +1,5 @@
 # RealTime Chat App
 
-A fullstack chat app that enables user communication. Created using Appwrite's Auth and real-time capabilities.
+A fullstack chat app that enables user communication. Created using Appwrite's Auth and Realtime capabilities.
 
-[Live version](https://tba/)
+[Live version](https://react-chat-app-moarnight.netlify.app/)
